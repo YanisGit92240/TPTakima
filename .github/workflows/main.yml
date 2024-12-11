@@ -22,7 +22,6 @@ jobs:
     needs: test-backend  # Ce job ne s'exécutera que si 'test-backend' réussit
     runs-on: ubuntu-22.04
     steps:
-      # Checkout le code du dépôt
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
@@ -33,6 +32,7 @@ jobs:
           context: ./simple-api  # Emplacement du Dockerfile pour l'API
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
           push: ${{ github.ref == 'refs/heads/main' }}  # Ne pousse que sur la branche 'main'
+          distribution: linux/amd64  # Ajout du paramètre 'distribution'
 
       # Construire l'image Docker et la pousser pour la base de données
       - name: Build image and push database
@@ -41,6 +41,7 @@ jobs:
           context: ./simple-db  # Emplacement du Dockerfile pour la base de données
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-db:latest
           push: ${{ github.ref == 'refs/heads/main' }}
+          distribution: linux/amd64
 
       # Construire l'image Docker et la pousser pour le serveur HTTPD
       - name: Build image and push httpd
@@ -49,3 +50,4 @@ jobs:
           context: ./simple-httpd  # Emplacement du Dockerfile pour HTTPD
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
+          distribution: linux/amd64
