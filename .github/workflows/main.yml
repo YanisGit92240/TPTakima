@@ -22,7 +22,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Build and test with Maven
-        run: mvn clean verify
+        run: mvn clean verify --file ./simple-api/pom.xml
+
 
   build-and-push-docker-image:
     needs: test-backend
