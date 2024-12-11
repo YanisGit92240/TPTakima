@@ -54,6 +54,6 @@ jobs:
       - name: Build and push httpd Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-httpd
+          context: ./http-server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
           push: ${{ github.ref == 'refs/heads/main' }}
