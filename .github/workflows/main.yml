@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
+          distribution: 'adoptopenjdk'
 
       - name: Build and test with Maven
         run: mvn clean verify
@@ -27,34 +28,29 @@ jobs:
     needs: test-backend
     runs-on: ubuntu-22.04
     steps:
-      # Vérifier le code source
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      # Étape 1 : Construction et publication de l'image pour l'API backend
       - name: Build and push backend Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-api  # Répertoire contenant le Dockerfile pour l'API
+          context: ./simple-api
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
-          push: ${{ github.ref == 'refs/heads/main' }}  # Ne pousse que si la branche est 'main'
+          push: ${{ github.ref == 'refs/heads/main' }}
 
-      # Étape 2 : Construction et publication de l'image pour la base de données (PostgreSQL)
       - name: Build and push database Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-db  # Répertoire contenant le Dockerfile pour la base de données
+          context: ./simple-db
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
-          push: ${{ github.ref == 'refs/heads/main' }}  # Ne pousse que si la branche est 'main'
+          push: ${{ github.ref == 'refs/heads/main' }}
 
-      # Étape 3 : Construction et publication de l'image pour HTTPD (serveur web)
       - name: Build and push httpd Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./simple-httpd  # Répertoire contenant le Dockerfile pour HTTPD
+          context: ./simple-httpd
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
-          push: ${{ github.ref == 'refs/heads/main' }}  # Ne pousse que si la branche est 'main'
+          push: ${{ github.ref == 'refs/heads/main' }}
 
-      # Étape 4 : Connexion à DockerHub (si non déjà configurée dans l'étape précédente)
       - name: Login to DockerHub
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
